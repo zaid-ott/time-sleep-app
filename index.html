@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Time & Sleep</title>
+<style>
+body{font-family:-apple-system;background:#f2f2f7;padding:20px}
+.card{background:white;padding:20px;border-radius:16px;margin-bottom:20px}
+button{width:100%;padding:12px;border-radius:10px;border:none;background:#007aff;color:white}
+input{width:100%;padding:10px;margin:8px 0}
+</style>
+</head>
+<body>
+
+<h2>Time & Sleep</h2>
+
+<div class="card">
+<h3>Work Hours</h3>
+<input type="time" id="arrival">
+<input type="time" id="leave">
+<input type="number" id="break" placeholder="Break minutes">
+<button onclick="work()">Calculate</button>
+<p id="work"></p>
+</div>
+
+<div class="card">
+<h3>Sleep Cycles</h3>
+<input type="time" id="wake">
+<button onclick="sleep()">Best Bedtime</button>
+<p id="sleep"></p>
+</div>
+
+<script>
+function work(){
+let a=document.getElementById("arrival").value.split(":")
+let l=document.getElementById("leave").value.split(":")
+let b=parseInt(document.getElementById("break").value)||0
+
+let start=a[0]*60+ +a[1]
+let end=l[0]*60+ +l[1]
+
+let total=end-start-b
+
+let h=Math.floor(total/60)
+let m=total%60
+
+let week=localStorage.week||0
+week=parseFloat(week)+total/60
+localStorage.week=week
+
+document.getElementById("work").innerText=
+"Worked: "+h+"h "+m+"m | Week: "+week.toFixed(2)+"h"
+}
+
+function sleep(){
+let w=document.getElementById("wake").value.split(":")
+let wake=w[0]*60+ +w[1]
+
+let cycles=[6,5,4,3]
+let out="Best bedtimes:\\n"
+
+cycles.forEach(c=>{
+let t=wake-(c*90)
+if(t<0)t+=1440
+let h=Math.floor(t/60)
+let m=t%60
+out+=h.toString().padStart(2,'0')+":"+m.toString().padStart(2,'0')+" ("+c+" cycles)\\n"
+})
+
+document.getElementById("sleep").innerText=out
+}
+</script>
+
+</body>
+</html>
